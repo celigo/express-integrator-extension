@@ -1,0 +1,22 @@
+{
+  "name": "express-integrator-extension",
+  "main": "index.js",
+  "version": "0.1.0",
+  "description": "express-integrator-extension",
+  "engines": {
+    "node": "0.12.x"
+  },
+  "private": true,
+  "dependencies": {
+    "express": "4.13.3",
+    "lodash": "2.4.1",
+    "request": "2.61.0",
+    "nconf": "0.6.9",
+    "body-parser": "1.13.3",
+    "object-sizeof": "1.0.6"
+  },
+  "devDependencies": {
+    "mocha": "2.2.5",
+    "should": "7.0.4"
+  }
+}

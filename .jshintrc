@@ -1,0 +1,31 @@
+{ "globals"   : {
+    "describe"         : false,
+    "it"               : false,
+    "before"           : false,
+    "beforeEach"       : false,
+    "after"            : false,
+    "afterEach"        : false,
+    "$e": false
+  },
+  "camelcase": false,
+  "curly"    : false,
+  "evil"     : false,
+  "eqeqeq"   : true,
+  "freeze"   : true,
+  "indent"   : 2,
+  "latedef"  : true,
+  "laxcomma" : true,
+  "node"     : true,
+  "trailing" : true,
+  "strict"   : true,
+  "unused"   : "vars",
+  "undef"    : true,
+  "laxcomma" : true,
+  "asi"      : true,
+
+  "-W003"    : false,
+  "-W061"    : false,
+  "-W116"    : false,
+  "-W083"    : false,
+  "-W014"    : false
+}
