@@ -2,7 +2,7 @@
   "name": "express-integrator-extension",
   "main": "index.js",
   "version": "0.1.0",
-  "description": "express-integrator-extension",
+  "description": "Express based extension for Integrator.io",
   "engines": {
     "node": "0.12.x"
   },
@@ -11,12 +11,16 @@
     "express": "4.13.3",
     "lodash": "2.4.1",
     "request": "2.61.0",
-    "nconf": "0.6.9",
     "body-parser": "1.13.3",
-    "object-sizeof": "1.0.6"
+    "object-sizeof": "1.0.6",
+    "winston": "0.7.3",
+    "express-winston": "1.0.0"
   },
   "devDependencies": {
     "mocha": "2.2.5",
     "should": "7.0.4"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec --recursive --timeout 45000 test"
   }
 }

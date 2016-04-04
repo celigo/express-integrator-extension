@@ -1,8 +1,10 @@
 'use strict'
 
 var request = require('request')
+  , extensionServer = require('../index')
+  , testModule = require('./testModule')
 
-exports.postRequest = function(uri, json, callback, bearerToken) {
+exports.postRequest = function(uri, json, bearerToken, callback) {
   var requestOptions = {
     uri: uri,
     json : json,
@@ -17,7 +19,7 @@ exports.postRequest = function(uri, json, callback, bearerToken) {
   })
 }
 
-exports.putRequest = function(uri, json, callback, bearerToken) {
+exports.putRequest = function(uri, json, bearerToken, callback) {
   var requestOptions = {
     uri: uri,
     json : json,
@@ -32,7 +34,7 @@ exports.putRequest = function(uri, json, callback, bearerToken) {
   })
 }
 
-exports.getRequest = function(uri, callback, bearerToken) {
+exports.getRequest = function(uri, bearerToken, callback) {
   var requestOptions = {
     uri: uri,
     method : 'GET',
@@ -47,7 +49,7 @@ exports.getRequest = function(uri, callback, bearerToken) {
   })
 }
 
-exports.deleteRequest = function(uri, callback, bearerToken) {
+exports.deleteRequest = function(uri, bearerToken, callback) {
   var requestOptions = {
     uri: uri,
     method : 'DELETE',
@@ -59,5 +61,28 @@ exports.deleteRequest = function(uri, callback, bearerToken) {
 
   request(requestOptions, function(error, res, body) {
     return callback(error, res, body)
+  })
+}
+
+exports.createServerForUnitTest = function (diy, connector, callback) {
+
+    extensionServer.createServer(
+      { diy : diy ? testModule : undefined
+      , connectors :
+        { '9ce44f88a25272b6d9cbb430ebbcfcf1' : connector ? testModule : undefined
+        , '6a4b9e817fb9f522dbd012f642855a03' : connector ? testModule : undefined
+        }
+      , port : 7000
+      , systemToken : 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+      },
+      function (e) {
+        return callback(e)
+      }
+    )
+}
+
+exports.stopUnitTestServer = function (callback) {
+  extensionServer.stopServer(function (err) {
+    return callback(err)
   })
 }

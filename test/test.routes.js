@@ -1,17 +1,19 @@
 'use strict'
 
-var nconf = require('nconf')
-  , testUtil = require('./util')
-  , functionURL = 'http://localhost:' + 7000 + '/function'
-  , systemToken = nconf.get('INTEGRATOR_EXTENSION_SYSTEM_TOKEN')
+var testUtil = require('./util')
   , assert = require('assert')
-  , extensionServer = require('../index')
   , should = require('should')
-  , testModule = require('./testModule')
 
-var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
+var port = 7000
+  , functionURL = 'http://localhost:' + port + '/function'
+  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+  , bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
 
 describe('/function route tests', function () {
+
+  before(function (done) {
+    testUtil.createServerForUnitTest(true, true, done)
+  })
 
   it('should throw error when request doesn\'t have type field set', function (done) {
 
@@ -26,17 +28,16 @@ describe('/function route tests', function () {
         }
       }
 
-    testUtil.postRequest(functionURL, options, function(error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(422)
       var expected =
       { code: 'missing_required_field'
-      , message: 'missing type field in request.'
-      , field: 'type'
+      , message: 'Missing required field type in the request body.'
       }
       assert.deepEqual(expected, body.errors[0])
       done()
-    }, systemToken)
+    })
   })
 
   it('should throw error when request doesn\'t have function field set', function (done) {
@@ -51,19 +52,18 @@ describe('/function route tests', function () {
         }
       }
 
-    testUtil.postRequest(functionURL, options, function(error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(422)
 
       var expected =
       { code: 'missing_required_field'
-      , message: 'missing function field in request.'
-      , field: 'function'
+      , message: 'Missing required field function in the request body.'
       }
 
       assert.deepEqual(expected, body.errors[0])
       done()
-    }, systemToken)
+    })
   })
 
   it('should throw error when request doesn\'t have options field set', function (done) {
@@ -72,19 +72,18 @@ describe('/function route tests', function () {
       , type : 'hook'
       }
 
-    testUtil.postRequest(functionURL, options, function(error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(422)
 
       var expected =
       { code: 'missing_required_field'
-      , message: 'missing options field in request.'
-      , field: 'options'
+      , message: 'Missing required field options in the request body.'
       }
 
       assert.deepEqual(expected, body.errors[0])
       done()
-    }, systemToken)
+    })
   })
 
   it('should throw error when request doesn\'t have either of diy or connectorId fields set', function (done) {
@@ -99,7 +98,7 @@ describe('/function route tests', function () {
         }
       }
 
-    testUtil.postRequest(functionURL, options, function(error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(422)
 
@@ -110,10 +109,22 @@ describe('/function route tests', function () {
 
       assert.deepEqual(expected, body.errors[0])
       done()
-    }, systemToken)
+    })
   })
 
-  it('should throw error when diy is set in request but the diy is not set in the integrator extension server', function (done) {
+  describe('DIY and connectors test', function() {
+
+    before(function (done) {
+      testUtil.stopUnitTestServer(function (err) {
+        if(err) {
+          err.message.should.equal('Integration-extension-server not deployed.')
+          err.code.should.equal('invaid_function_call')
+        }
+        done()
+      })
+    })
+
+    it('should throw error when diy is set in request but the diy is not set in the integrator extension server', function (done) {
       var options =
         { type : 'hook'
         , diy : true
@@ -126,36 +137,30 @@ describe('/function route tests', function () {
           }
         }
 
-      extensionServer.createServer(
-        { connectors :
-          { '9ce44f88a25272b6d9cbb430ebbcfcf1' : testModule
-          , '6a4b9e817fb9f522dbd012f642855a03' : testModule
+      testUtil.createServerForUnitTest(false, true, function (err) {
+        if (err) return done(err)
+
+        var functionURL1 = 'http://localhost:'+ port +'/function'
+        testUtil.postRequest(functionURL1, options, systemToken, function(error, res, body) {
+          if(error) return done(error)
+          res.statusCode.should.equal(422)
+
+          var expected =
+          { code : 'missing_required_field'
+          , message : 'DIY is not configured in the extension server.'
           }
-        , port : 8000
-        , systemToken : nconf.get('INTEGRATOR_EXTENSION_SYSTEM_TOKEN')
-        }
-      )
-      var functionURL1 = 'http://localhost:'+ 8000 +'/function'
-      testUtil.postRequest(functionURL1, options, function(error, res, body) {
-        if(error) return done(error)
-        res.statusCode.should.equal(422)
 
-        var expected =
-        { code : 'diy_not_found'
-        , message : 'DIY is not configured in the extension server.'
-        }
-
-        assert.deepEqual(expected, body.errors[0])
-        extensionServer.stopServer(8000)
-        done()
-      }, systemToken)
+          assert.deepEqual(expected, body.errors[0])
+          testUtil.stopUnitTestServer(done)
+        })
+      })
     })
 
     it('should throw error when connectors doesn\'t exist but connectorId is set', function (done) {
       var options =
         { type : 'installer'
         , diy : false
-        , connectorId : 'ddasdasdsadasdasd'
+        , connectorId : '12ege39f7a016v72a8b9c79q'
         , function : 'doSomething'
         , options :
           { key1: [ 'abc' ]
@@ -165,121 +170,127 @@ describe('/function route tests', function () {
           }
         }
 
-      extensionServer.createServer(
-        { connectors : { '9ce44f88a25272b6d9cbb430ebbcfcf1' : testModule }
-        , port : 8000
-        , systemToken : nconf.get('INTEGRATOR_EXTENSION_SYSTEM_TOKEN')
-        }
-      )
-      var functionURL1 = 'http://localhost:'+ 8000 +'/function'
-      testUtil.postRequest(functionURL1, options, function(error, res, body) {
-        if(error) return done(error)
-        res.statusCode.should.equal(422)
+      testUtil.createServerForUnitTest(false, true, function (err) {
+        if (err) return done(err)
 
-        var expected =
-          { code: 'missing_required_field'
-          , message: 'Need to set either the diy or _connectorId field in request.'
-          }
+        var functionURL1 = 'http://localhost:'+ port +'/function'
+        testUtil.postRequest(functionURL1, options, systemToken, function(error, res, body) {
+          if(error) return done(error)
+          res.statusCode.should.equal(422)
 
-        assert.deepEqual(expected, body.errors[0])
-        extensionServer.stopServer(9000)
-        done()
-      }, systemToken)
+          var expected =
+            { code: 'missing_required_field'
+            , message: 'Need to set either the diy or _connectorId field in request.'
+            }
+
+          assert.deepEqual(expected, body.errors[0])
+          testUtil.stopUnitTestServer(done)
+        })
+      })
     })
 
-    it('should fail with 401 for wrong system token', function(done) {
-      var options = {
-        diy : true,
-        type : 'installer',
-        function: 'runInstallerSuccessStep',
-        options: {
-          key: 'value',
-          bearerToken: bearerToken,
-          _integrationId: '56eae39e9a016a71a8a9c7e4'
-        }
-      }
-
-      testUtil.postRequest(functionURL, options, function(error, res, body) {
-        if(error) return done(error)
-        
-        res.statusCode.should.equal(401)
-        res.headers['WWW-Authenticate'.toLowerCase()].should.equal('invalid system token')
-        var expected = { errors: [{ code: 'unauthorized', message: 'invalid system token.' }] }
-        assert.deepEqual(body, expected)
-
-        done()
-      }, 'BAD_INTEGRATOR_EXTENSION_SYSTEM_TOKEN')
+    after(function (done) {
+      testUtil.createServerForUnitTest(true, true, done)
     })
+  })
 
-    it('should fail with 422 when response exceeds max size', function(done) {
-      var options = {
-        diy : true,
-        type : 'hook',
-        function: 'echoResponse',
-        maxResponsSize: 2,
-        options: {
-          resp: ['abc', 'abc'],
-          bearerToken: bearerToken
-        }
+  it('should fail with 401 for wrong system token', function(done) {
+    var options = {
+      diy : true,
+      type : 'installer',
+      function: 'runInstallerSuccessStep',
+      options: {
+        key: 'value',
+        bearerToken: bearerToken,
+        _integrationId: '56eae39e9a016a71a8a9c7e4'
       }
+    }
 
-      testUtil.postRequest(functionURL, options, function(error, res, body) {
-        if(error) return done(error)
+    testUtil.postRequest(functionURL, options, 'BAD_INTEGRATOR_EXTENSION_SYSTEM_TOKEN', function(error, res, body) {
+      if(error) return done(error)
 
-        res.statusCode.should.equal(422)
-        var expected = { errors: [{"code":"response_size_exceeded","message":"response stream exceeded limit of 2 bytes."}] }
+      res.statusCode.should.equal(401)
+      res.headers['WWW-Authenticate'.toLowerCase()].should.equal('invalid system token')
+      var expected = { errors: [{ code: 'unauthorized', message: 'Invalid system token.' }] }
+      assert.deepEqual(body, expected)
 
-        assert.deepEqual(body, expected)
-        done()
-      }, systemToken)
+      done()
     })
+  })
 
-    it('should fail with 422 when response is not serializable', function(done) {
-      var options = {
-        diy : true,
-        type : 'hook',
-        function: 'respondWithNonSearializableObject',
-        maxResponsSize: 2000,
-        options: {
-          key1: ['abc'],
-          bearerToken: bearerToken
-        }
+  it('should fail with 422 when response exceeds max size', function(done) {
+    var options = {
+      diy : true,
+      type : 'hook',
+      function: 'echoResponse',
+      maxResponsSize: 2,
+      options: {
+        resp: ['abc', 'abc'],
+        bearerToken: bearerToken
       }
+    }
 
-      testUtil.postRequest(functionURL, options, function(error, res, body) {
-        if(error) return done(error)
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
+      if(error) return done(error)
 
-        res.statusCode.should.equal(422)
-        var expected = { errors: [{"code":"invalid_extension_response","message":"extension response is not serializable."}] }
+      res.statusCode.should.equal(422)
+      var expected = { errors: [{"code":"response_size_exceeded","message":"response stream exceeded limit of 2 bytes."}] }
 
-        assert.deepEqual(body, expected)
-        done()
-      }, systemToken)
+      assert.deepEqual(body, expected)
+      done()
     })
+  })
 
-    it('should pass when request size is greater than default 100kb', function(done) {
-      var largeString = 'a'
-      for (var i = 0; i < 4000000; i++) {
-        largeString += 'a'
+  it('should fail with 422 when response is not serializable', function(done) {
+    var options = {
+      diy : true,
+      type : 'hook',
+      function: 'respondWithNonSearializableObject',
+      maxResponsSize: 2000,
+      options: {
+        key1: ['abc'],
+        bearerToken: bearerToken
       }
+    }
 
-      var options = {
-        diy : true,
-        type: 'hook',
-        function: 'echoResponse',
-        maxResponsSize: 2000,
-        options: {
-          key1: [largeString],
-          bearerToken: bearerToken
-        }
-      }
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
+      if(error) return done(error)
 
-      testUtil.postRequest(functionURL, options, function(error, res, body) {
-        if(error) return done(error)
+      res.statusCode.should.equal(422)
+      var expected = { errors: [{"code":"invalid_extension_response","message":"Extension response is not serializable."}] }
 
-        res.statusCode.should.equal(200)
-
-        done()
-      }, systemToken)
+      assert.deepEqual(body, expected)
+      done()
     })
+  })
+
+  it('should pass when request size is greater than default 100kb', function(done) {
+    var largeString = 'a'
+    for (var i = 0; i < 4000000; i++) {
+      largeString += 'a'
+    }
+
+    var options = {
+      diy : true,
+      type: 'hook',
+      function: 'echoResponse',
+      maxResponsSize: 2000,
+      options: {
+        key1: [largeString],
+        bearerToken: bearerToken
+      }
+    }
+
+    testUtil.postRequest(functionURL, options, systemToken, function(error, res, body) {
+      if(error) return done(error)
+
+      res.statusCode.should.equal(200)
+
+      done()
+    })
+  })
+
+  after(function (done) {
+    testUtil.stopUnitTestServer(done)
+  })
 })
