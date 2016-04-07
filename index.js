@@ -6,25 +6,28 @@ var express = require('express')
   , http = require('http')
   , https = require('https')
   , _ = require('lodash')
+  , errors = require('./lib/errors')
+  , logger = require('winston')
+  , expressWinston = require('express-winston')
 
-var servers = {}
+var server
 
-global.$e = require('./errorStore')
+function createServer (options, callback) {
 
-function createServer (options) {
+  if(server) return callback(errors.getError('SERVER_EXISTS'))
 
-  if (!options) throw $e.getError('SERVER_OPTIONS_NOT_SET')
-  if (!options.systemToken) throw $e.getError('SERVER_SYSTEMTOKEN_NOT_SET')
+  if (!options) return callback(errors.getError('SERVER_OPTIONS_NOT_PROVIDED'))
+  if (!options.systemToken) return callback(errors.getError('SERVER_SYSTEMTOKEN_NOT_PROVIDED'))
 
   if (!options.diy && !options.connectors) {
-    throw $e.getError('SERVER_SET_DIY_OR_CONNECTORS')
+    return callback(errors.getError('SERVER_SET_DIY_OR_CONNECTORS'))
   }
 
-  if (_.isEmpty(options.connectors)) {
-    throw $e.getError('SERVER_NO_CONNECTORS_SET')
+  if (options.connectors && _.isEmpty(options.connectors)) {
+    return callback(errors.getError('SERVER_NO_CONNECTORS_PROVIDED'))
   }
 
-  // Important: Remove default limit of 5
+  // Set default to Infinity
   http.globalAgent.maxSockets = options.maxSockets || Infinity
   https.globalAgent.maxSockets = options.maxSockets || Infinity
 
@@ -32,30 +35,58 @@ function createServer (options) {
 
   app.use(bodyParser.json({limit: '10mb'}))
 
+  if (options.enableLogging !== false) {
+    app.use(expressWinston.logger({
+      transports: [
+        new logger.transports.Console({
+          colorize: true,
+          timestamp :true,
+          prettyPrint: true
+        })
+      ],
+      msg: '{{res.statusCode}} HTTP {{req.method}} {{req.url}} {{res.responseTime}}ms',
+      meta: false
+    }))
+
+    app.use(expressWinston.errorLogger({
+      transports: [
+        new logger.transports.Console({
+          json: true,
+          colorize: true
+        })
+      ]
+    }))
+  }
+
   routes(app, options)
   var port = options.port || 80
 
-  var server = app.listen(port, function () {
-    console.log('express-integrator-extension server listening on port: '+port)
-    if (options.diy) console.log('DIY module is loaded')
+  server = app.listen(port, function () {
+    logger.info('express-integrator-extension server listening on port: '+port)
+    if (options.diy) logger.info('Loaded DIY module.')
     if (options.connectors) {
-      _.forEach(options.connectors, function (value, connectorId) {
-        console.log('Connector module for connector: '+ connectorId +' is loaded')
+      _.forEach(options.connectors, function (value, _connectorId) {
+        logger.info('Loaded connector module for _connectorId: '+ _connectorId)
       })
     }
-    servers.port = server
+    return callback()
   })
 
   server.on('error', function (err) {
-    console.log('express-integrator-extension server creation failed due to error'+err.toString())
+    logger.error('express-integrator-extension server creation failed due to error'+err.toString())
   })
+
+  // Timeout should be greater than the server's/load balancer's idle timeout to avoid 504 errors.
+  server.timeout = options.timeout || 315000
 }
 
-function stopServer (port) {
-  if(!servers.port) throw $e.getError('SERVER_NOT_FOUND')
-  var server = servers.port
-  servers.port = undefined
-  server.close()
+function stopServer (callback) {
+  if(!server) return callback(errors.getError('SERVER_NOT_FOUND'))
+  server.close(function (err) {
+    if (err) return callback(err)
+    server = undefined
+    return callback()
+  })
 }
 
 exports.createServer = createServer

@@ -1,18 +1,21 @@
 'use strict'
 
 var assert = require('assert')
-  , nconf = require('nconf')
   , testUtil = require('./util')
   , should = require('should')
 
 var baseURL = 'http://localhost:' + 7000
   , bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
-  , systemToken = nconf.get('INTEGRATOR_EXTENSION_SYSTEM_TOKEN')
+  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
   , _importId = '_importId'
 
 var functionURL = baseURL + '/function'
 
 describe('Hook tests', function () {
+
+  before(function (done) {
+    testUtil.createServerForUnitTest(true, true, done)
+  })
 
   it('should pass after successfully calling hook function', function (done) {
 
@@ -29,16 +32,16 @@ describe('Hook tests', function () {
       }
     }
 
-    testUtil.postRequest(functionURL, options, function (error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
       if(error) return done(error)
-      
+
       res.statusCode.should.equal(200)
 
       options.options.function = 'doSomething'
       assert.deepEqual(body, [options.options])
 
       done()
-    }, systemToken)
+    })
   })
 
   it('should fail with 422 for error', function (done) {
@@ -54,7 +57,7 @@ describe('Hook tests', function () {
       }
     }
 
-    testUtil.postRequest(functionURL, options, function (error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
       if(error) return done(error)
 
       res.statusCode.should.equal(422)
@@ -62,7 +65,7 @@ describe('Hook tests', function () {
 
       assert.deepEqual(body, expected)
       done()
-    }, systemToken)
+    })
   })
 
   it('should pass after successfully calling hook function where function field is an array', function (done) {
@@ -80,7 +83,7 @@ describe('Hook tests', function () {
       }
     }
 
-    testUtil.postRequest(functionURL, options, function (error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(200)
 
@@ -88,7 +91,7 @@ describe('Hook tests', function () {
       assert.deepEqual(body, [options.options])
 
       done()
-    }, systemToken)
+    })
   })
 
   it('should pass after successfully calling hook function where postBody field is set', function (done) {
@@ -106,7 +109,7 @@ describe('Hook tests', function () {
       }
     }
 
-    testUtil.postRequest(functionURL, options, function (error, res, body) {
+    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
       if(error) return done(error)
       res.statusCode.should.equal(200)
 
@@ -114,6 +117,10 @@ describe('Hook tests', function () {
       assert.deepEqual(body, [options.postBody])
 
       done()
-    }, systemToken)
+    })
+  })
+
+  after(function (done) {
+    testUtil.stopUnitTestServer(done)
   })
 })
