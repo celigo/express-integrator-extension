@@ -14,7 +14,7 @@ var server
 
 function createServer (options, callback) {
 
-  if(server) return callback(errors.getError('SERVER_EXISTS'))
+  if (server) return callback(errors.getError('SERVER_ALREADY_CREATED'))
 
   if (!options) return callback(errors.getError('SERVER_OPTIONS_NOT_PROVIDED'))
   if (!options.systemToken) return callback(errors.getError('SERVER_SYSTEMTOKEN_NOT_PROVIDED'))
