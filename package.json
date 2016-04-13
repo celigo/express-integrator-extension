@@ -3,10 +3,15 @@
   "main": "index.js",
   "version": "0.1.0",
   "description": "Express based extension for Integrator.io",
+  "homepage": "http://integrator.io",
   "engines": {
-    "node": "0.12.x"
+    "node": ">= 0.12"
   },
-  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celigo/express-integrator-extension.git"
+  },
   "dependencies": {
     "express": "4.13.3",
     "lodash": "2.4.1",
