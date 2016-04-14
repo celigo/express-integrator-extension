@@ -1,6 +1,6 @@
 /.project
 /node_modules
-*.log
+*.log.*
 test/
 .travis.yml
 .gitignore
