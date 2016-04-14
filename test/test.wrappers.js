@@ -1,23 +1,21 @@
 'use strict'
 
 var assert = require('assert')
-  , testUtil = require('./util')
+var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
-  , bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
-  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  , _importId = '_importId'
+var bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
+var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+var _importId = '_importId'
 
 var functionURL = baseURL + '/function'
 
 describe('Wrapper tests', function () {
-
   before(function (done) {
     testUtil.createServerForUnitTest(true, true, done)
   })
 
   it('should pass after successfully calling hook function', function (done) {
-
     var options = {
       diy: true,
       type: 'wrapper',
@@ -32,7 +30,7 @@ describe('Wrapper tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       assert.deepEqual(body, [{statusCode: 200, id: options.options}])
@@ -55,11 +53,11 @@ describe('Wrapper tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(422)
       var expected =
-        { errors: [ { code: 'pingCode', message: 'pingMessage' } ] }
+      { errors: [ { code: 'pingCode', message: 'pingMessage' } ] }
 
       assert.deepEqual(body, expected)
       done()
@@ -67,7 +65,6 @@ describe('Wrapper tests', function () {
   })
 
   it('should pass after successfully calling hook function with functions field set to an array', function (done) {
-
     var options = {
       diy: true,
       type: 'wrapper',
@@ -82,7 +79,7 @@ describe('Wrapper tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       assert.deepEqual(body, [{statusCode: 200, id: options.options}])
@@ -92,7 +89,6 @@ describe('Wrapper tests', function () {
   })
 
   it('should pass after successfully calling hook function with postBody set', function (done) {
-
     var options = {
       diy: true,
       type: 'wrapper',
@@ -107,7 +103,7 @@ describe('Wrapper tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       assert.deepEqual(body, [{statusCode: 200, id: options.postBody}])

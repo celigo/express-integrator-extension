@@ -1,18 +1,17 @@
 'use strict'
 
 var assert = require('assert')
-  , testUtil = require('./util')
+var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
-  , bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
-  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  , _integrationId = '_integrationId'
-  , _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
+var bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
+var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+var _integrationId = '_integrationId'
+var _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
 
 var functionURL = baseURL + '/function'
 
 describe('Connector installer tests', function () {
-
   before(function (done) {
     testUtil.createServerForUnitTest(false, true, done)
   })
@@ -31,7 +30,7 @@ describe('Connector installer tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       options.options.function = 'runInstallerSuccessStep'
@@ -54,7 +53,7 @@ describe('Connector installer tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       options.options.function = 'connectorInstallerFunction'
@@ -77,10 +76,10 @@ describe('Connector installer tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(422)
-      var expected = { errors: [ { code: 'Error', message: 'runInstallerErrorStep'} ] }
+      var expected = { errors: [{ code: 'Error', message: 'runInstallerErrorStep' }] }
 
       assert.deepEqual(body, expected)
       done()
@@ -101,7 +100,7 @@ describe('Connector installer tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
@@ -116,7 +115,7 @@ describe('Connector installer tests', function () {
     var options = {
       _connectorId: _connectorId,
       type: 'installer',
-      function:'runInstallerSuccessStep',
+      function: 'runInstallerSuccessStep',
       postBody: {
         key1: 'value1',
         key2: 'value1',
@@ -126,7 +125,7 @@ describe('Connector installer tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
@@ -136,7 +135,6 @@ describe('Connector installer tests', function () {
       done()
     })
   })
-
 
   after(function (done) {
     testUtil.stopUnitTestServer(done)

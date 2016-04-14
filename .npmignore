@@ -1,7 +1,6 @@
 /.project
 /node_modules
 *.log
-.jshintrc
 test/
 .travis.yml
 .gitignore

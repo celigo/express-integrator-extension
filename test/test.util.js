@@ -4,8 +4,7 @@ var assert = require('assert')
 var util = require('../lib/util')
 
 describe('Util functions', function() {
-
-  it('should check object serialization', function(done) {
+  it('should check object serialization', function (done) {
     assert.equal(util.isSerializable(null), true)
     assert.equal(util.isSerializable(undefined), true)
     assert.equal(util.isSerializable(true), true)
