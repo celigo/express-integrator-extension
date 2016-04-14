@@ -1,24 +1,22 @@
 'use strict'
 
 var assert = require('assert')
-  , testUtil = require('./util')
-  , should = require('should')
+var testUtil = require('./util')
+var should = require('should')
 
 var baseURL = 'http://localhost:' + 7000
-  , bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
-  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  , _importId = '_importId'
+var bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
+var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+var _importId = '_importId'
 
 var functionURL = baseURL + '/function'
 
 describe('Hook tests', function () {
-
   before(function (done) {
     testUtil.createServerForUnitTest(true, true, done)
   })
 
   it('should pass after successfully calling hook function', function (done) {
-
     var options = {
       diy: true,
       type: 'hook',
@@ -33,7 +31,7 @@ describe('Hook tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
@@ -58,10 +56,10 @@ describe('Hook tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(422)
-      var expected = { errors: [ { code: 'my_error', message: 'doSomethingError'} ] }
+      var expected = { errors: [{ code: 'my_error', message: 'doSomethingError' }] }
 
       assert.deepEqual(body, expected)
       done()
@@ -69,7 +67,6 @@ describe('Hook tests', function () {
   })
 
   it('should pass after successfully calling hook function where function field is an array', function (done) {
-
     var options = {
       diy: true,
       type: 'hook',
@@ -84,7 +81,7 @@ describe('Hook tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
       res.statusCode.should.equal(200)
 
       options.options.function = 'doSomething'
@@ -95,7 +92,6 @@ describe('Hook tests', function () {
   })
 
   it('should pass after successfully calling hook function where postBody field is set', function (done) {
-
     var options = {
       diy: true,
       type: 'hook',
@@ -110,7 +106,7 @@ describe('Hook tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
       res.statusCode.should.equal(200)
 
       options.postBody.function = 'doSomething'

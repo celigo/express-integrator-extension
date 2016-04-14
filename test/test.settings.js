@@ -1,17 +1,17 @@
 'use strict'
 
 var assert = require('assert')
-  , testUtil = require('./util')
+var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
-  , bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
-  , systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  , _integrationId = '_integrationId'
-  , _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
+var bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
+var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
+var _integrationId = '_integrationId'
+var _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
 
 var functionURL = baseURL + '/function'
-describe('Connector settings tests', function () {
 
+describe('Connector settings tests', function () {
   before(function (done) {
     testUtil.createServerForUnitTest(false, true, done)
   })
@@ -30,7 +30,7 @@ describe('Connector settings tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(422)
       var expected = { errors: [ { code: 'Error', message: 'persistSettings' } ] }
@@ -54,7 +54,7 @@ describe('Connector settings tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
@@ -79,7 +79,7 @@ describe('Connector settings tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
       options.options.function = 'refreshMetadata'
@@ -93,7 +93,7 @@ describe('Connector settings tests', function () {
     var options = {
       diy: false,
       _connectorId: _connectorId,
-      function: ['setting','persistSettings'],
+      function: ['setting', 'persistSettings'],
       type: 'setting',
       options: {
         pending: {fieldOne: 'oldValue', fieldTwo: 'newValue'},
@@ -103,7 +103,7 @@ describe('Connector settings tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
@@ -128,7 +128,7 @@ describe('Connector settings tests', function () {
     }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if(error) return done(error)
+      if (error) return done(error)
 
       res.statusCode.should.equal(200)
 
