@@ -1,7 +1,7 @@
 {
   "name": "express-integrator-extension",
   "main": "./lib/extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Express based extension for Integrator.io",
   "homepage": "https://integrator.io",
   "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
@@ -30,6 +30,11 @@
     "test": "mocha --reporter spec --recursive --timeout 45000 test"
   },
   "standard": {
-    "globals": ["describe", "it", "before", "after"]
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after"
+    ]
   }
 }
