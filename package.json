@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Express based extension for Integrator.io",
   "homepage": "https://integrator.io",
-   "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
+  "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
   "engines": {
     "node": ">= 0.12"
   },
