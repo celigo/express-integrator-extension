@@ -220,7 +220,7 @@ describe('/function route tests', function () {
       diy: true,
       type: 'hook',
       function: 'echoResponse',
-      maxResponsSize: 2,
+      maxResponseSize: 2,
       options: {
         resp: ['abc', 'abc'],
         bearerToken: bearerToken
@@ -243,7 +243,7 @@ describe('/function route tests', function () {
       diy: true,
       type: 'hook',
       function: 'respondWithNonSearializableObject',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: ['abc'],
         bearerToken: bearerToken
@@ -271,7 +271,7 @@ describe('/function route tests', function () {
       diy: true,
       type: 'hook',
       function: 'echoResponse',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: [largeString],
         bearerToken: bearerToken

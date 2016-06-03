@@ -44,7 +44,7 @@ describe('Wrapper tests', function () {
       diy: true,
       type: 'wrapper',
       function: 'pingError',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: ['abc'],
         bearerToken: bearerToken,

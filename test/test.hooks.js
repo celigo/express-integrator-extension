@@ -21,7 +21,7 @@ describe('Hook tests', function () {
       diy: true,
       type: 'hook',
       function: 'doSomething',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: ['abc'],
         key2: {k: 'v'},
@@ -47,7 +47,7 @@ describe('Hook tests', function () {
       diy: true,
       type: 'hook',
       function: 'doSomethingError',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: ['abc'],
         bearerToken: bearerToken,
@@ -71,7 +71,7 @@ describe('Hook tests', function () {
       diy: true,
       type: 'hook',
       function: ['hook', 'doSomething'],
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       options: {
         key1: ['abc'],
         key2: {k: 'v'},
@@ -96,7 +96,7 @@ describe('Hook tests', function () {
       diy: true,
       type: 'hook',
       function: 'doSomething',
-      maxResponsSize: 2000,
+      maxResponseSize: 2000,
       postBody: {
         key1: ['abc'],
         key2: {k: 'v'},
