@@ -64,54 +64,6 @@ describe('Wrapper tests', function () {
     })
   })
 
-  it('should pass after successfully calling hook function with functions field set to an array', function (done) {
-    var options = {
-      diy: true,
-      type: 'wrapper',
-      function: ['wrapper', 'importOptions'],
-      maxResponseSize: 2000,
-      options: {
-        key1: ['abc'],
-        key2: {k: 'v'},
-        bearerToken: bearerToken,
-        _importId: _importId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-
-      res.statusCode.should.equal(200)
-      assert.deepEqual(body, [{statusCode: 200, id: options.options}])
-
-      done()
-    })
-  })
-
-  it('should pass after successfully calling hook function with postBody set', function (done) {
-    var options = {
-      diy: true,
-      type: 'wrapper',
-      function: 'importOptions',
-      maxResponseSize: 2000,
-      postBody: {
-        key1: ['abc'],
-        key2: {k: 'v'},
-        bearerToken: bearerToken,
-        _importId: _importId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-
-      res.statusCode.should.equal(200)
-      assert.deepEqual(body, [{statusCode: 200, id: options.postBody}])
-
-      done()
-    })
-  })
-
   after(function (done) {
     testUtil.stopUnitTestServer(done)
   })

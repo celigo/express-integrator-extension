@@ -89,56 +89,6 @@ describe('Connector settings tests', function () {
     })
   })
 
-  it('should pass after successfully executing persistSettings with function field set to an array', function (done) {
-    var options = {
-      diy: false,
-      _connectorId: _connectorId,
-      function: ['setting', 'persistSettings'],
-      type: 'setting',
-      options: {
-        pending: {fieldOne: 'oldValue', fieldTwo: 'newValue'},
-        bearerToken: bearerToken,
-        _integrationId: _integrationId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-
-      res.statusCode.should.equal(200)
-
-      options.options.function = 'persistSettings'
-      assert.deepEqual(body, options.options)
-
-      done()
-    })
-  })
-
-  it('should pass after successfully executing persistSettings with postBody set', function (done) {
-    var options = {
-      diy: false,
-      _connectorId: _connectorId,
-      function: 'persistSettings',
-      type: 'setting',
-      postBody: {
-        pending: {fieldOne: 'oldValue', fieldTwo: 'newValue'},
-        bearerToken: bearerToken,
-        _integrationId: _integrationId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-
-      res.statusCode.should.equal(200)
-
-      options.postBody.function = 'persistSettings'
-      assert.deepEqual(body, options.postBody)
-
-      done()
-    })
-  })
-
   after(function (done) {
     testUtil.stopUnitTestServer(done)
   })
