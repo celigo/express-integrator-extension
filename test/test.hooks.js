@@ -66,56 +66,6 @@ describe('Hook tests', function () {
     })
   })
 
-  it('should pass after successfully calling hook function where function field is an array', function (done) {
-    var options = {
-      diy: true,
-      type: 'hook',
-      function: ['hook', 'doSomething'],
-      maxResponseSize: 2000,
-      options: {
-        key1: ['abc'],
-        key2: {k: 'v'},
-        bearerToken: bearerToken,
-        _importId: _importId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-      res.statusCode.should.equal(200)
-
-      options.options.function = 'doSomething'
-      assert.deepEqual(body, [options.options])
-
-      done()
-    })
-  })
-
-  it('should pass after successfully calling hook function where postBody field is set', function (done) {
-    var options = {
-      diy: true,
-      type: 'hook',
-      function: 'doSomething',
-      maxResponseSize: 2000,
-      postBody: {
-        key1: ['abc'],
-        key2: {k: 'v'},
-        bearerToken: bearerToken,
-        _importId: _importId
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-      res.statusCode.should.equal(200)
-
-      options.postBody.function = 'doSomething'
-      assert.deepEqual(body, [options.postBody])
-
-      done()
-    })
-  })
-
   after(function (done) {
     testUtil.stopUnitTestServer(done)
   })
