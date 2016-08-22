@@ -1,6 +1,5 @@
 'use strict'
 
-var assert = require('assert')
 var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
@@ -11,12 +10,12 @@ var _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
 
 var functionURL = baseURL + '/function'
 
-describe('Connector installer tests', function () {
+describe('Express connector installer tests', function () {
   before(function (done) {
-    testUtil.createServerForUnitTest(false, true, done)
+    testUtil.createMockExpressServer(false, true, done)
   })
 
-  it('should pass after successfully executing installer step', function (done) {
+  it('should pass after successfully executing installer step.', function (done) {
     var options = {
       _connectorId: _connectorId,
       type: 'installer',
@@ -34,13 +33,13 @@ describe('Connector installer tests', function () {
 
       res.statusCode.should.equal(200)
       options.options.function = 'runInstallerSuccessStep'
-      assert.deepEqual(body, options.options)
+      body.should.eql(options.options)
 
       done()
     })
   })
 
-  it('should call connectorInstallerFunction installer', function (done) {
+  it('should call connectorInstallerFunction installer.', function (done) {
     var options = {
       _connectorId: _connectorId,
       type: 'installer',
@@ -57,13 +56,13 @@ describe('Connector installer tests', function () {
 
       res.statusCode.should.equal(200)
       options.options.function = 'connectorInstallerFunction'
-      assert.deepEqual(body, options.options)
+      body.should.eql(options.options)
 
       done()
     })
   })
 
-  it('should fail with 422 for installer error', function (done) {
+  it('should fail with 422 for installer error.', function (done) {
     var options = {
       _connectorId: _connectorId,
       type: 'installer',
@@ -80,13 +79,13 @@ describe('Connector installer tests', function () {
 
       res.statusCode.should.equal(422)
       var expected = { errors: [{ code: 'Error', message: 'runInstallerErrorStep' }] }
+      body.should.eql(expected)
 
-      assert.deepEqual(body, expected)
       done()
     })
   })
 
   after(function (done) {
-    testUtil.stopUnitTestServer(done)
+    testUtil.stopMockExpressServer(done)
   })
 })

@@ -1,6 +1,5 @@
 'use strict'
 
-var assert = require('assert')
 var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
@@ -12,7 +11,7 @@ var functionURL = baseURL + '/function'
 
 describe('Wrapper tests', function () {
   before(function (done) {
-    testUtil.createServerForUnitTest(true, true, done)
+    testUtil.createMockExpressServer(true, true, done)
   })
 
   it('should pass after successfully calling hook function', function (done) {
@@ -33,7 +32,7 @@ describe('Wrapper tests', function () {
       if (error) return done(error)
 
       res.statusCode.should.equal(200)
-      assert.deepEqual(body, [{statusCode: 200, id: options.options}])
+      body.should.eql([{statusCode: 200, id: options.options}])
 
       done()
     })
@@ -59,12 +58,12 @@ describe('Wrapper tests', function () {
       var expected =
       { errors: [ { code: 'pingCode', message: 'pingMessage' } ] }
 
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
       done()
     })
   })
 
   after(function (done) {
-    testUtil.stopUnitTestServer(done)
+    testUtil.stopMockExpressServer(done)
   })
 })

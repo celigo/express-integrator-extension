@@ -1,6 +1,5 @@
 'use strict'
 
-var assert = require('assert')
 var testUtil = require('./util')
 
 var baseURL = 'http://localhost:' + 7000
@@ -11,9 +10,9 @@ var _connectorId = '9ce44f88a25272b6d9cbb430ebbcfcf1'
 
 var functionURL = baseURL + '/function'
 
-describe('Connector settings tests', function () {
+describe('Express connector settings tests', function () {
   before(function (done) {
-    testUtil.createServerForUnitTest(false, true, done)
+    testUtil.createMockExpressServer(false, true, done)
   })
 
   it('should fail with 422 for persistSettings error', function (done) {
@@ -35,7 +34,7 @@ describe('Connector settings tests', function () {
       res.statusCode.should.equal(422)
       var expected = { errors: [ { code: 'Error', message: 'persistSettings' } ] }
 
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
       done()
     })
   })
@@ -59,7 +58,7 @@ describe('Connector settings tests', function () {
       res.statusCode.should.equal(200)
 
       options.options.function = 'persistSettings'
-      assert.deepEqual(body, options.options)
+      body.should.eql(options.options)
 
       done()
     })
@@ -83,13 +82,13 @@ describe('Connector settings tests', function () {
 
       res.statusCode.should.equal(200)
       options.options.function = 'refreshMetadata'
-      assert.deepEqual(body, options.options)
+      body.should.eql(options.options)
 
       done()
     })
   })
 
   after(function (done) {
-    testUtil.stopUnitTestServer(done)
+    testUtil.stopMockExpressServer(done)
   })
 })
