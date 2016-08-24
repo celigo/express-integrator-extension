@@ -1,20 +1,18 @@
 'use strict'
 
 var testUtil = require('./util')
-var assert = require('assert')
-var should = require('should')
 
 var port = 7000
 var functionURL = 'http://localhost:' + port + '/function'
 var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
 var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
 
-describe('/function route tests', function () {
+describe('Express /function route tests', function () {
   before(function (done) {
-    testUtil.createServerForUnitTest(true, true, done)
+    testUtil.createMockExpressServer(true, true, done)
   })
 
-  it('should throw error when request doesn\'t have type field set', function (done) {
+  it('should return error when request doesn\'t have type field set.', function (done) {
     var options = {
       diy: true,
       function: 'doSomething',
@@ -31,14 +29,16 @@ describe('/function route tests', function () {
       res.statusCode.should.equal(422)
       var expected = {
         code: 'missing_required_field',
-        message: 'Missing required field type in the request body.'
+        message: 'Missing required field type in the extension options.'
       }
-      assert.deepEqual(expected, body.errors[0])
+
+      body.errors[0].should.eql(expected)
+
       done()
     })
   })
 
-  it('should throw error when request doesn\'t have function field set', function (done) {
+  it('should return error when request doesn\'t have function field set.', function (done) {
     var options = {
       diy: true,
       type: 'hook',
@@ -56,18 +56,19 @@ describe('/function route tests', function () {
 
       var expected = {
         code: 'missing_required_field',
-        message: 'Missing required field function in the request body.'
+        message: 'Missing required field function in the extension options.'
       }
 
-      assert.deepEqual(expected, body.errors[0])
+      body.errors[0].should.eql(expected)
       done()
     })
   })
 
-  it('should throw error when request doesn\'t have options field set', function (done) {
+  it('should return error when request doesn\'t have options field set.', function (done) {
     var options =
       { diy: true,
-        type: 'hook'
+        type: 'hook',
+        function: 'doSomething'
       }
 
     testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
@@ -76,15 +77,15 @@ describe('/function route tests', function () {
 
       var expected = {
         code: 'missing_required_field',
-        message: 'Missing required field options in the request body.'
+        message: 'Function options haven\'t been provided.'
       }
 
-      assert.deepEqual(expected, body.errors[0])
+      body.errors[0].should.eql(expected)
       done()
     })
   })
 
-  it('should throw error when request doesn\'t have either of diy or connectorId fields set', function (done) {
+  it('should return error when request doesn\'t have either of diy or _connectorId fields set.', function (done) {
     var options = {
       type: 'hook',
       function: 'doSomething',
@@ -102,17 +103,17 @@ describe('/function route tests', function () {
 
       var expected = {
         code: 'missing_required_field',
-        message: 'Need to set either the diy or _connectorId field in request.'
+        message: 'Need to set either the diy or _connectorId field in extension options.'
       }
 
-      assert.deepEqual(expected, body.errors[0])
+      body.errors[0].should.eql(expected)
       done()
     })
   })
 
   describe('DIY and connectors test', function () {
     before(function (done) {
-      testUtil.stopUnitTestServer(function (err) {
+      testUtil.stopMockExpressServer(function (err) {
         if (err) {
           err.message.should.equal('Integration-extension-server not deployed.')
           err.code.should.equal('invaid_function_call')
@@ -121,7 +122,7 @@ describe('/function route tests', function () {
       })
     })
 
-    it('should throw error when diy is set in request but the diy is not set in the integrator extension server', function (done) {
+    it('should return error when diy is set in request but the diy is not set in the integrator extension server.', function (done) {
       var options = {
         type: 'hook',
         diy: true,
@@ -134,7 +135,7 @@ describe('/function route tests', function () {
         }
       }
 
-      testUtil.createServerForUnitTest(false, true, function (err) {
+      testUtil.createMockExpressServer(false, true, function (err) {
         if (err) return done(err)
 
         var functionURL1 = 'http://localhost:' + port + '/function'
@@ -144,16 +145,16 @@ describe('/function route tests', function () {
 
           var expected = {
             code: 'missing_required_field',
-            message: 'DIY is not configured in the extension server.'
+            message: 'DIY is not configured in the extension configuration.'
           }
 
-          assert.deepEqual(expected, body.errors[0])
-          testUtil.stopUnitTestServer(done)
+          body.errors[0].should.eql(expected)
+          testUtil.stopMockExpressServer(done)
         })
       })
     })
 
-    it('should throw error when connectors doesn\'t exist but connectorId is set', function (done) {
+    it('should return error when connectors doesn\'t exist but _connectorId is set.', function (done) {
       var options = {
         type: 'installer',
         diy: false,
@@ -167,7 +168,7 @@ describe('/function route tests', function () {
         }
       }
 
-      testUtil.createServerForUnitTest(false, true, function (err) {
+      testUtil.createMockExpressServer(false, true, function (err) {
         if (err) return done(err)
 
         var functionURL1 = 'http://localhost:' + port + '/function'
@@ -177,21 +178,21 @@ describe('/function route tests', function () {
 
           var expected = {
             code: 'missing_required_field',
-            message: 'Need to set either the diy or _connectorId field in request.'
+            message: 'Need to set either the diy or _connectorId field in extension options.'
           }
 
-          assert.deepEqual(expected, body.errors[0])
-          testUtil.stopUnitTestServer(done)
+          body.errors[0].should.eql(expected)
+          testUtil.stopMockExpressServer(done)
         })
       })
     })
 
     after(function (done) {
-      testUtil.createServerForUnitTest(true, true, done)
+      testUtil.createMockExpressServer(true, true, done)
     })
   })
 
-  it('should fail with 401 for wrong system token', function (done) {
+  it('should fail with 401 for wrong system token.', function (done) {
     var options = {
       diy: true,
       type: 'installer',
@@ -209,13 +210,13 @@ describe('/function route tests', function () {
       res.statusCode.should.equal(401)
       res.headers['WWW-Authenticate'.toLowerCase()].should.equal('invalid system token')
       var expected = { errors: [{ code: 'unauthorized', message: 'Invalid system token.' }] }
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
 
       done()
     })
   })
 
-  it('should fail with 422 when response exceeds max size', function (done) {
+  it('should fail with 422 when response exceeds max size.', function (done) {
     var options = {
       diy: true,
       type: 'hook',
@@ -233,12 +234,12 @@ describe('/function route tests', function () {
       res.statusCode.should.equal(422)
       var expected = { errors: [{'code': 'response_size_exceeded', 'message': 'response stream exceeded limit of 2 bytes.'}] }
 
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
       done()
     })
   })
 
-  it('should fail with 422 when response is not serializable', function (done) {
+  it('should fail with 422 when response is not serializable.', function (done) {
     var options = {
       diy: true,
       type: 'hook',
@@ -256,12 +257,12 @@ describe('/function route tests', function () {
       res.statusCode.should.equal(422)
       var expected = { errors: [{'code': 'invalid_extension_response', 'message': 'Extension response is not serializable.'}] }
 
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
       done()
     })
   })
 
-  it('should pass when request size is greater than default 100kb', function (done) {
+  it('should pass when request size is greater than default 100kb.', function (done) {
     var largeString = 'a'
     for (var i = 0; i < 4000000; i++) {
       largeString += 'a'
@@ -288,6 +289,6 @@ describe('/function route tests', function () {
   })
 
   after(function (done) {
-    testUtil.stopUnitTestServer(done)
+    testUtil.stopMockExpressServer(done)
   })
 })

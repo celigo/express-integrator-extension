@@ -1,8 +1,6 @@
 'use strict'
 
-var assert = require('assert')
 var testUtil = require('./util')
-var should = require('should')
 
 var baseURL = 'http://localhost:' + 7000
 var bearerToken = 'TEST_INTEGRATOR_EXTENSION_BEARER_TOKEN'
@@ -11,12 +9,12 @@ var _importId = '_importId'
 
 var functionURL = baseURL + '/function'
 
-describe('Hook tests', function () {
+describe('Express hook tests', function () {
   before(function (done) {
-    testUtil.createServerForUnitTest(true, true, done)
+    testUtil.createMockExpressServer(true, true, done)
   })
 
-  it('should pass after successfully calling hook function', function (done) {
+  it('should pass after successfully calling hook function.', function (done) {
     var options = {
       diy: true,
       type: 'hook',
@@ -36,13 +34,13 @@ describe('Hook tests', function () {
       res.statusCode.should.equal(200)
 
       options.options.function = 'doSomething'
-      assert.deepEqual(body, [options.options])
+      body.should.eql([options.options])
 
       done()
     })
   })
 
-  it('should fail with 422 for error', function (done) {
+  it('should fail with 422 for error.', function (done) {
     var options = {
       diy: true,
       type: 'hook',
@@ -61,12 +59,12 @@ describe('Hook tests', function () {
       res.statusCode.should.equal(422)
       var expected = { errors: [{ code: 'my_error', message: 'doSomethingError' }] }
 
-      assert.deepEqual(body, expected)
+      body.should.eql(expected)
       done()
     })
   })
 
   after(function (done) {
-    testUtil.stopUnitTestServer(done)
+    testUtil.stopMockExpressServer(done)
   })
 })
