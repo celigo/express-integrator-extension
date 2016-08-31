@@ -11,7 +11,7 @@ var functionURL = baseURL + '/function'
 
 describe('Express hook tests', function () {
   before(function (done) {
-    testUtil.createMockExpressServer(true, true, done)
+    testUtil.createMockExpressServer(true, false, done)
   })
 
   it('should pass after successfully calling hook function.', function (done) {

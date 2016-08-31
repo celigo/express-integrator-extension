@@ -65,15 +65,17 @@ exports.deleteRequest = function (uri, bearerToken, callback) {
 }
 
 exports.createMockExpressServer = function (diy, connector, callback) {
-  expressExtension.createServer({
-    diy: diy ? testModule : undefined,
-    connectors: {
-      '9ce44f88a25272b6d9cbb430ebbcfcf1': connector ? testModule : undefined,
-      '6a4b9e817fb9f522dbd012f642855a03': connector ? testModule : undefined
-    },
+  var config = {
     port: 7000,
     systemToken: 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  }, function (e) {
+  }
+  config.diy = diy ? testModule : undefined
+  var connectors = {
+    '9ce44f88a25272b6d9cbb430ebbcfcf1': testModule,
+    '6a4b9e817fb9f522dbd012f642855a03': testModule
+  }
+  config.connectors = connector ? connectors : undefined
+  expressExtension.createServer(config, function (e) {
     return callback(e)
   })
 }
