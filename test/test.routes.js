@@ -9,7 +9,7 @@ var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
 
 describe('Express /function route tests', function () {
   before(function (done) {
-    testUtil.createMockExpressServer(true, true, done)
+    testUtil.createMockExpressServer(true, false, done)
   })
 
   it('should return error when request doesn\'t have type field set.', function (done) {
@@ -188,7 +188,7 @@ describe('Express /function route tests', function () {
     })
 
     after(function (done) {
-      testUtil.createMockExpressServer(true, true, done)
+      testUtil.createMockExpressServer(true, false, done)
     })
   })
 
