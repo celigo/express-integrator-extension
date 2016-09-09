@@ -53,3 +53,64 @@ winstonInstance
 #### stopServer(callback)
 
 stopServer function stops the express app from listening on the designated port.
+
+### Getting Started
+
+Given below are the complete steps to create a working Express based stack.
+
+1. Create a stack in integrator.io
+  1. Login into integrator.io.
+  2. Click on options field present at the top right corner and select stacks.
+  3. Click on the New Stack button.
+  4. Give an appropriate name for the stack.
+  5. Select type as "Server".
+  6. Set the "Host" field to the uri on which the project will be hosted on.
+  7. Click save to create the stack.
+  8. You will be redirected to the stacks page. Please make note of the System Token by clicking on "click to display" under the System Token column corresponding to the stack which you have created.
+
+2. Write code
+  1. Run "npm init" to create node project in a new folder.
+  2. Run "npm i --save express-integrator-extension".
+  3. Create a new file functions.js and save the following extension functions in it.
+  	```js
+    var obj = {
+      hooks: {
+        preSaveFunction: function (options, callback) {
+          // your code
+        }       
+      },
+
+      wrappers: {
+        pingFunction: function (options, callback) {
+          // your code
+        }
+      }
+    };
+
+    module.exports = obj;
+    ```
+  4. Create a new file index.js and save the following code in it. This shows options for DIY functions but connectors can also be set in options.
+  	```js
+  	var expressExtension = require('express-integrator-extension');
+  	var functions = require('./functions');
+
+  	var port = 81;
+  	var systemToken = '************'; // Set this value to the systemToken of the stack created in integrator.io
+  	var options = {
+  	  diy: functions,
+  	  port: port,
+  	  systemToken: systemToken
+  	};
+
+	expressExtension.createServer(options, function (err) {
+
+	});
+
+	expressExtension.stopServer(function (err) {
+
+	});
+  	```
+  5. Host the node project on a single server or a set of servers behind a load balancer to scale as needed.
+
+
+Now, the stack is ready for use and it can be referenced from appropriate exports, imports amd connections.
