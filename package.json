@@ -24,10 +24,12 @@
     "mocha": "2.4.5",
     "should": "8.3.0",
     "request": "2.74.0",
-    "coveralls": "2.11.11"
+    "coveralls": "2.11.11",
+    "istanbul": "0.3.18"
   },
   "scripts": {
-    "test": "mocha --require ./test/common.js --reporter spec --recursive --timeout 45000 test"
+    "test": "mocha --require ./test/common.js --reporter spec --recursive --timeout 45000 test",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha test"
   },
   "standard": {
     "globals": [
