@@ -23,7 +23,8 @@
   "devDependencies": {
     "mocha": "2.4.5",
     "should": "8.3.0",
-    "request": "2.74.0"
+    "request": "2.74.0",
+    "coveralls": "2.11.11"
   },
   "scripts": {
     "test": "mocha --require ./test/common.js --reporter spec --recursive --timeout 45000 test"
