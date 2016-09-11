@@ -4,5 +4,4 @@ node_js:
 - 0.12.7
 script:
 - npm test
-after_success:
-  - coveralls
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
