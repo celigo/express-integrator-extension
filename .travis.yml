@@ -4,5 +4,5 @@ node_js:
 - 0.12.7
 script:
 - "npm test"
-- "npm coverage"
+- "npm run coverage"
 after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
