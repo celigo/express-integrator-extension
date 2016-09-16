@@ -18,7 +18,7 @@
     "express": "4.14.0",
     "body-parser": "1.15.0",
     "express-winston": "1.3.0",
-    "integrator-extension": "0.3.1"
+    "integrator-extension": "https://github.com/celigo/integrator-extension.git#0.3.2"
   },
   "devDependencies": {
     "mocha": "2.4.5",
