@@ -86,8 +86,20 @@ var wrappers = {
   }
 }
 
+var utilities = {
+  myUtility: function (options, callback) {
+    if (options.error) {
+      return callback(new Error('myUtility error'))
+    }
+
+    options.function = 'myUtility'
+    return callback(null, options)
+  }
+}
+
 exports.installer = installer
 exports.uninstaller = uninstaller
 exports.settings = settings
 exports.hooks = hooks
 exports.wrappers = wrappers
+exports.utilities = utilities
