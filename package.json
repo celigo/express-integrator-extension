@@ -1,7 +1,7 @@
 {
   "name": "express-integrator-extension",
   "main": "./lib/server",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "Express based extension for Integrator.io",
   "homepage": "https://integrator.io",
   "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
