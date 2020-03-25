@@ -12,32 +12,6 @@ describe('Express /function route tests', function () {
     testUtil.createMockExpressServer(true, false, done)
   })
 
-  it('should return error when request doesn\'t have type field set.', function (done) {
-    var options = {
-      diy: true,
-      function: 'doSomething',
-      options: {
-        key1: [ 'abc' ],
-        key2: { k: 'v' },
-        _importId: '56eae39e9a016a71a8a9c7e4',
-        bearerToken: bearerToken
-      }
-    }
-
-    testUtil.postRequest(functionURL, options, systemToken, function (error, res, body) {
-      if (error) return done(error)
-      res.statusCode.should.equal(422)
-      var expected = {
-        code: 'missing_required_field',
-        message: 'Missing required field type in the extension options.'
-      }
-
-      body.errors[0].should.eql(expected)
-
-      done()
-    })
-  })
-
   it('should return error when request doesn\'t have function field set.', function (done) {
     var options = {
       diy: true,
