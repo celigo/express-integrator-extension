@@ -273,11 +273,11 @@ describe('routes tests', function () {
 
   describe('Express /openConnections route tests', function () {
 
-    beforeEach((done)=>{
+    before((done)=>{
       testUtil.createMockExpressServer(true, false, done)
     })
 
-    afterEach((done)=>{
+    after((done)=>{
       testUtil.stopMockExpressServer(done)
     })
 
@@ -295,16 +295,26 @@ describe('routes tests', function () {
     const configs = {
       timeout: 0
     }
+    let stopServer = true
 
-    beforeEach((done)=>{
+    before((done)=>{
       testUtil.createCustomMockExpressServer(configs,true, false, done)
+    })
+
+    after((done)=>{
+      if (stopServer) {
+        testUtil.stopMockExpressServer(done)
+      }
+      else {
+        done()
+      }
     })
 
     it('should begin killing the server', (done) => {
       testUtil.getRequest(stopServerURL, systemToken, (err, response) => {
         if (err) return done(err)
         response.statusCode.should.equal(200)
-        console.log(response)
+        stopServer = false
         done()
       })
     })
