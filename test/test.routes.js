@@ -6,8 +6,9 @@ var port = 7000
 var functionURL = 'http://localhost:' + port + '/function'
 var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
 var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
+const openConnectionURL = 'http://localhost:' + port + '/openConnections'
 
-describe('Express /function route tests', function () {
+describe('Express route tests', function () {
   before(function (done) {
     testUtil.createMockExpressServer(true, false, done)
   })
@@ -261,6 +262,17 @@ describe('Express /function route tests', function () {
       done()
     })
   })
+
+  describe('openConnections test', function () {
+      it('should return the no of active connections', (done) => {
+        testUtil.getRequest(openConnectionURL, systemToken, (err, response, body) => {
+          if (err) return done(err)
+          response.statusCode.should.equal(200)
+          body.should.equal(0)
+          done()
+        })
+      })
+  });
 
   after(function (done) {
     testUtil.stopMockExpressServer(done)
