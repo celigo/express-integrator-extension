@@ -3,9 +3,12 @@
 var testUtil = require('./util')
 
 var port = 7000
-var functionURL = 'http://localhost:' + port + '/function'
+const baseURL = 'http://localhost:' + port
+var functionURL = baseURL + '/function'
 var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
 var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
+const openConnectionsURL = baseURL + '/openConnections'
+const stopServerURL = baseURL + '/stopServer'
 
 describe('routes tests', function () {
   describe('Express /function route tests', function () {
@@ -267,34 +270,42 @@ describe('routes tests', function () {
       testUtil.stopMockExpressServer(done)
     })
   })
-  describe('default no of connections check', () => {
 
-    const baseURL = 'http://localhost:' + port
-    const openConnectionsURL = baseURL + '/openConnections'
-    const stopServerURL = baseURL + '/stopServer'
+  describe('Express /openConnections route tests', function () {
 
-    beforeEach(function (done) {
+    beforeEach((done)=>{
       testUtil.createMockExpressServer(true, false, done)
     })
 
-    afterEach(function (done) {
+    afterEach((done)=>{
       testUtil.stopMockExpressServer(done)
     })
 
     it('should return the no of active connections', (done) => {
       testUtil.getRequest(openConnectionsURL, systemToken, (err, response, body) => {
-        if (err) return done(err);
+        if (err) return done(err)
         response.statusCode.should.equal(200)
         body.should.equal(0)
-        done();
+        done()
       })
+    })
+  })
+
+  describe('Express /stopServer route tests', function () {
+    const configs = {
+      timeout: 0
+    }
+
+    beforeEach((done)=>{
+      testUtil.createCustomMockExpressServer(configs,true, false, done)
     })
 
     it('should begin killing the server', (done) => {
       testUtil.getRequest(stopServerURL, systemToken, (err, response) => {
-        if (err) return done(err);
+        if (err) return done(err)
         response.statusCode.should.equal(200)
-        done();
+        console.log(response)
+        done()
       })
     })
   })
