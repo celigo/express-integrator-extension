@@ -89,7 +89,7 @@ exports.stopMockExpressServer = function (callback) {
 exports.createCustomMockExpressServer = function (configs, diy, connector, callback) {
   var config = {
     ...configs,
-    port: 7000,
+    port: configs.port || 7001,
     systemToken: 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
   }
   config.diy = diy ? testModule : undefined
