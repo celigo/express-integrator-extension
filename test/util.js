@@ -85,20 +85,3 @@ exports.stopMockExpressServer = function (callback) {
     return callback(err)
   })
 }
-
-exports.createCustomMockExpressServer = function (configs, diy, connector, callback) {
-  var config = {
-    ...configs,
-    port: configs.port || 7001,
-    systemToken: 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
-  }
-  config.diy = diy ? testModule : undefined
-  var connectors = {
-    '9ce44f88a25272b6d9cbb430ebbcfcf1': testModule,
-    '6a4b9e817fb9f522dbd012f642855a03': testModule
-  }
-  config.connectors = connector ? connectors : undefined
-  expressExtension.createServer(config, function (e) {
-    return callback(e)
-  })
-}
