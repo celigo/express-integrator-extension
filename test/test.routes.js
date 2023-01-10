@@ -3,12 +3,13 @@
 var testUtil = require('./util')
 
 var port = 7000
+var customPort = 7001
 const baseURL = 'http://localhost:' + port
 var functionURL = baseURL + '/function'
 var systemToken = 'INTEGRATOR_EXTENSION_SYSTEM_TOKEN'
 var bearerToken = 'ott873f2beed978433997c42b4e5af05d9b'
 const openConnectionsURL = baseURL + '/openConnections'
-const stopServerURL = baseURL + '/stopServer'
+const stopServerURL = 'http://localhost:' + customPort + '/stopServer'
 
 describe('routes tests', function () {
   describe('Express /function route tests', function () {
@@ -293,28 +294,18 @@ describe('routes tests', function () {
 
   describe('Express /stopServer route tests', function () {
     const configs = {
-      timeout: 0
+      timeout: 0,
+      port: 7001
     }
-    let stopServer = true
 
     before((done)=>{
       testUtil.createCustomMockExpressServer(configs,true, false, done)
-    })
-
-    after((done)=>{
-      if (stopServer) {
-        testUtil.stopMockExpressServer(done)
-      }
-      else {
-        done()
-      }
     })
 
     it('should begin killing the server', (done) => {
       testUtil.getRequest(stopServerURL, systemToken, (err, response) => {
         if (err) return done(err)
         response.statusCode.should.equal(200)
-        stopServer = false
         done()
       })
     })
