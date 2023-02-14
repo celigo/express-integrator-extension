@@ -1,7 +1,7 @@
 {
   "name": "express-integrator-extension",
   "main": "./lib/server",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "Express based extension for Integrator.io",
   "homepage": "https://integrator.io",
   "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
@@ -14,16 +14,17 @@
     "url": "https://github.com/celigo/express-integrator-extension.git"
   },
   "dependencies": {
-    "winston": "2.2.0",
-    "express": "4.18.2",
     "body-parser": "1.20.1",
+    "express": "4.18.2",
     "express-winston": "2.5.1",
-    "integrator-extension": "0.3.11"
+    "integrator-extension": "0.3.11",
+    "nanoid": "3.3.4",
+    "winston": "2.2.0"
   },
   "devDependencies": {
     "mocha": "10.1.0",
-    "should": "8.3.0",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "should": "8.3.0"
   },
   "scripts": {
     "test": "mocha --require ./test/common.js --reporter spec --recursive --timeout 45000 test"
