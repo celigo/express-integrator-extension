@@ -1,7 +1,7 @@
 {
   "name": "express-integrator-extension",
   "main": "./lib/server",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Express based extension for Integrator.io",
   "homepage": "https://integrator.io",
   "author": "Celigo Inc. <developer@celigo.com> (http://www.celigo.com)",
@@ -14,11 +14,11 @@
     "url": "https://github.com/celigo/express-integrator-extension.git"
   },
   "dependencies": {
-    "body-parser": "1.20.3",
+    "body-parser": "1.20.9",
     "express": "5.1.0",
     "express-winston": "4.2.0",
     "integrator-extension": "0.3.12",
-    "nanoid": "3.3.8",
+    "nanoid": "3.3.18",
     "winston": "3.14.0"
   },
   "devDependencies": {
